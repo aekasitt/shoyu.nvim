@@ -145,22 +145,22 @@
   </text>
   <path
     d='
-      M1158, 475
-      h-658
+      M1081, 475
+      h-581
       q-9,0 -9,9
       q0,9 9,9
-      h658
+      h581
       z
     '
     fill='#DEA584'
     />
   <path
     d='
-      M1158, 475
-      h62
+      M1081, 475
+      h119
       q9,0 9,9
       q0,9 -9,9
-      h-62
+      h-119
       z
     '
     fill='#000080'
@@ -178,16 +178,16 @@
     <tspan
       fill='#888'
       >
-      93.9%
+      80.3%
     </tspan>
     <tspan
-      dx='28rem'>
+      dx='27rem'>
       Lua
     </tspan>
     <tspan
       fill='#888'
       >
-      6.1%
+      17.7%
     </tspan>
   </text>
 </svg>
