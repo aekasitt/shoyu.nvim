@@ -1,5 +1,10 @@
 # shoyu.nvim
 
+[![Neovim plugin](https://img.shields.io/badge/neovim-plugin-57A143?logo=neovim)](https://neovim.io)
+[![Top](https://img.shields.io/github/languages/top/aekasitt/shoyu.nvim)](https://github.com/aekasitt/shoyu.nvim)
+[![Languages](https://img.shields.io/github/languages/count/aekasitt/shoyu.nvim)](https://github.com/aekasitt/shoyu.nvim)
+[![Last commit](https://img.shields.io/github/last-commit/aekasitt/shoyu.nvim/master)](https://github.com/aekasitt/shoyu.nvim)
+
 A powerful Neovim plugin that generates beautiful code snippet images for social media sharing.
 Built with Rust for performance and powered by advanced syntax highlighting.
 
