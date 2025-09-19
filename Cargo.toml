@@ -1,0 +1,37 @@
+[build-dependencies]
+cc = '1.0'
+
+
+[dependencies]
+anyhow = '1.0'
+base64 = '0.21'
+fontdue = '0.7'
+image = '0.24'
+libc = '0.2'
+owned_ttf_parser = '0.15'
+rand = '0.8'
+serde = { version = '1.0', features = ['derive'] }
+serde_json = '1.0'
+syntect = '5.1'
+thiserror = '1.0'
+
+
+[lib]
+name = 'shoyu'
+crate-type = ['cdylib']
+
+
+[package]
+description = 'Beautiful code snippets in Neovim is easy, let me Shoyu!'
+edition = '2021'
+license = 'MIT'
+name = 'shoyu'
+version = '0.1.0'
+
+
+[profile.release]
+opt-level = 'z'
+codegen-units = 1
+lto = true
+panic = 'abort'
+strip = true

@@ -1,0 +1,23 @@
+# fonts
+**/*.ttf
+**/*.otf
+
+
+# macos
+.DS_Store
+
+
+# neovim
+*.tmp
+*.swp
+*.swo
+
+
+# rust
+target
+
+
+# workspace
+.vscode
+.idea
+.ignore
