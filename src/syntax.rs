@@ -61,6 +61,7 @@ impl SyntaxHighlighter {
       "html" => "HTML",
       "css" => "CSS",
       "json" => "JSON",
+      "just" | "justfile" => "Makefile",
       "yaml" | "yml" => "YAML",
       "xml" => "XML",
       "md" | "markdown" => "Markdown",
@@ -345,6 +346,10 @@ pub fn is_language_supported(language: &str) -> bool {
     language.to_lowercase().as_str(),
     "javascript"
       | "js"
+      | "just"
+      | "justfile"
+      | "toml"
+      | "tomlfile"
       | "typescript"
       | "ts"
       | "python"
