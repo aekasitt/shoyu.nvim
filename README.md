@@ -263,6 +263,9 @@ fn my_theme() -> Theme {
 
 * [Carbon](https://carbon.now.sh) 
   - [repository](https://github.com/ellisonleao/carbon-now.nvim)
+* [EDMuzashi](https://www.f0nt.com/release/edmuzazhi) typeface
+  by [อาทรเกติ์ แสงเพชร](https://www.facebook.com/ed.crub)
+  nicknamed [ed_crub](https://www.f0nt.com/by/ed_crub)
 
 ## License
 
