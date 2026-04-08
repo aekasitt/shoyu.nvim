@@ -12,7 +12,7 @@ Built with Rust for performance and powered by advanced syntax highlighting.
 
 ## Features
 
-- 🎨 **8 Built-in Themes**: Dracula, Monokai, GitHub, Nord, Solarized Dark/Light, One Dark, and Gruvbox
+- 🎨 **5 Built-in Themes**: Dracula, Monokai, GitHub, Nord, Gruvbox, and Lucario
 - 🔥 **Syntax Highlighting**: Pattern-based highlighting for 20+ programming languages
 - ⚡ **Fast**: Rust-powered shared library compilation
 - 📱 **Social Media Ready**: High-resolution exports with 2x scaling
@@ -43,19 +43,16 @@ Built with Rust for performance and powered by advanced syntax highlighting.
 ```lua
 {
   'aekasitt/shoyu.nvim',
-  build = 'cargo build --release',
-  config = function()
-    require('shoyu').setup({
-      theme = 'dracula',
-      output_dir = vim.fn.expand('~/Pictures/shoyu'),
-      font_size = 18,
-      padding = 64,
-      window_controls = true,
-    })
-  end,
   dependencies = {
     'nvim-lua/plenary.nvim',
   },
+  opts = {
+    font_size = 18, -- default
+    output_dir = vim.fn.expand('~/Pictures/shoyu'), -- operating-system dependent
+    padding = 64,  -- default
+    theme = 'dracula', -- default; available: 'dracula', 'monokai', 'github', 'nord', 'gruvbox'
+    window_controls = true,  -- default
+  }
 }
 ```
 
@@ -137,8 +134,6 @@ require('shoyu').setup({
 2. **Monokai** - Classic dark theme with bright colors
 3. **GitHub** - Clean light theme matching GitHub's interface
 4. **Nord** - Arctic-inspired theme with cool colors
-5. **Solarized Dark/Light** - Low-contrast, eye-friendly themes
-6. **One Dark** - Atom's popular dark theme
 7. **Gruvbox** - Retro groove color scheme
 
 ## API Reference

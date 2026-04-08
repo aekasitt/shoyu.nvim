@@ -12,7 +12,7 @@ mod themes;
 
 /// FFI function to generate a code snippet image
 /// Returns a base64-encoded PNG image as a C string
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn generate_snippet_image(
   code: *const c_char,
   language: *const c_char,
@@ -23,19 +23,19 @@ pub extern "C" fn generate_snippet_image(
 }
 
 /// FFI function to free memory allocated by generate_snippet_image
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn free_string(s: *mut c_char) {
   safe_ffi::safe_free_string(s);
 }
 
 /// FFI function to get available themes
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn get_available_themes() -> *mut c_char {
   safe_ffi::safe_get_available_themes()
 }
 
 /// FFI function to validate language support
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn is_language_supported(language: *const c_char) -> c_int {
   safe_ffi::safe_is_language_supported(language)
 }

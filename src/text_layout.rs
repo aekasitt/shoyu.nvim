@@ -151,13 +151,7 @@ impl ComplexTextRenderer {
           let glyph_y = baseline_y + layout_glyph.y;
 
           // Render the glyph with the specified color
-          self.render_glyph_to_image(
-            image,
-            &glyph,
-            glyph_x,
-            glyph_y,
-            text_color,
-          )?;
+          self.render_glyph_to_image(image, &glyph, glyph_x, glyph_y, text_color)?;
         }
         current_x += layout_glyph.w;
       }
@@ -209,7 +203,8 @@ impl ComplexTextRenderer {
             let blended_alpha = ((alpha as u16 * fg_a as u16) / 255) as u8;
 
             let existing = image.get_pixel(pixel_x as u32, pixel_y as u32);
-            let blended = blend_alpha_pixel(*existing, Rgba([fg_r, fg_g, fg_b, 255]), blended_alpha);
+            let blended =
+              blend_alpha_pixel(*existing, Rgba([fg_r, fg_g, fg_b, 255]), blended_alpha);
             image.put_pixel(pixel_x as u32, pixel_y as u32, blended);
           }
         }
@@ -237,7 +232,11 @@ impl ComplexTextRenderer {
             let existing = image.get_pixel(pixel_x as u32, pixel_y as u32);
             let blended = if fg_r == 255 && fg_g == 255 && fg_b == 255 {
               // If white text color, use the glyph's actual color (for emoji)
-              blend_alpha_pixel(*existing, Rgba([data[i], data[i + 1], data[i + 2], 255]), alpha)
+              blend_alpha_pixel(
+                *existing,
+                Rgba([data[i], data[i + 1], data[i + 2], 255]),
+                alpha,
+              )
             } else {
               // Otherwise tint with the requested color
               let tinted_alpha = ((alpha as u16 * fg_a as u16) / 255) as u8;
@@ -285,7 +284,7 @@ fn load_thai_fonts() -> Vec<fontdb::Source> {
   for path in THAI_FONT_PATHS {
     if std::path::Path::new(path).exists() {
       if let Ok(data) = std::fs::read(path) {
-        sources.push(fontdb::Source::Binary(data.into()));
+        sources.push(fontdb::Source::Binary(std::sync::Arc::new(data)));
       }
     }
   }

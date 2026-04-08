@@ -70,19 +70,19 @@ function M.load_library()
       return M.lib
     end
   end
-
-  error(
-    string.format(
-      'Could not load shoyu shared library from plugin directory: %s\n'
-        .. 'Make sure to build the plugin with: cargo build --release\n'
-        .. 'Searched paths:\n'
-        .. '  - %s/target/release/\n'
-        .. '  - %s/target/debug/',
-      plugin_dir,
-      plugin_dir,
-      plugin_dir
+  vim.schedule(function()
+    vim.notify(
+      string.format(
+        'Could not load shoyu shared library from plugin directory: %s\n'
+          .. 'Make sure to build the plugin with: cargo build --release\n'
+          .. 'Searched paths:\n'
+          .. '  - %s/target/release/\n',
+        plugin_dir,
+        plugin_dir
+      ),
+      vim.log.levels.ERROR
     )
-  )
+  end)
 end
 
 -- Generate image output
@@ -291,6 +291,25 @@ end
 
 -- Setup
 function M.setup(_, opts)
+  if not vim.g.loaded_shoyu then
+    local source = debug.getinfo(1, 'S').source
+    if source:sub(1, 1) == '@' then
+      source = source:sub(2)
+    end
+    local plugin_dir = vim.fn.fnamemodify(source, ':h:h:h')
+    vim.schedule(function()
+      vim.notify(
+        string.format(
+          'Could not load shoyu shared library from plugin directory: %s\n'
+            .. 'Make sure to build the plugin with: cargo build --release\n'
+            .. 'If using LazyNvim build the plugin with: :Lazy build shoyu\n',
+          plugin_dir
+        ),
+        vim.log.levels.WARN
+      )
+    end)
+    return
+  end
   config = vim.tbl_deep_extend('force', defaults, opts or {})
   vim.fn.mkdir(config.output_dir, 'p')
   M.load_library()
