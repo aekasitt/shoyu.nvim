@@ -10,7 +10,7 @@ image = '0.24'
 libc = '0.2'
 owned_ttf_parser = '0.15'
 rand = '0.8'
-serde = { version = '1.0', features = ['derive'] }
+serde = { features = ['derive'], version = '1.0' }
 serde_json = '1.0'
 syntect = { default-features = false, features = [
   'default-syntaxes',
@@ -21,6 +21,7 @@ syntect = { default-features = false, features = [
 thiserror = '1.0'
 # cosmic-text for complex script rendering (Thai, Arabic, etc.)
 cosmic-text = { version = '0.12', default-features = false, features = ['std', 'swash'] }
+oxipng = { default-features = false, features = ['parallel'], version = '10.1.0' }
 
 
 [lib]

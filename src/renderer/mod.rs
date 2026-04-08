@@ -1,5 +1,8 @@
 /* ~~/src/renderer/mod.rs */
 
+// standard crates
+use std::time::Duration;
+
 // third-party crates
 use anyhow::{Result, anyhow};
 use base64::Engine;
@@ -138,9 +141,10 @@ impl SnippetRenderer {
       panel_y,
     )?;
 
-    // Convert to PNG and encode as base64
+    // Convert to PNG, minify, and encode as base64
     let png_data = self.image_to_png_bytes(&image)?;
-    let base64_data = general_purpose::STANDARD.encode(&png_data);
+    let optimized_png_data = Self::optimize_png_bytes(png_data);
+    let base64_data = general_purpose::STANDARD.encode(&optimized_png_data);
 
     Ok(format!("data:image/png;base64,{}", base64_data))
   }
@@ -301,6 +305,15 @@ impl SnippetRenderer {
     }
 
     Ok((current_x - x as i32) as u32)
+  }
+
+  fn optimize_png_bytes(png_data: Vec<u8>) -> Vec<u8> {
+    let mut options = oxipng::Options::from_preset(16);
+    options.timeout = Some(Duration::from_secs(15));
+    match oxipng::optimize_from_memory(&png_data, &options) {
+      Ok(optimized_png_data) if optimized_png_data.len() < png_data.len() => optimized_png_data,
+      _ => png_data,
+    }
   }
 
   fn image_to_png_bytes(&self, image: &RgbaImage) -> Result<Vec<u8>> {

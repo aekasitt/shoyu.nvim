@@ -1,11 +1,13 @@
 /* ~~/src/safe_ffi.rs */
 
-use anyhow::{anyhow, Result};
+// third-party crates
+use anyhow::{Result, anyhow};
 use std::ffi::{CStr, CString};
 use std::os::raw::{c_char, c_int};
 use std::panic;
 use std::ptr;
 
+// local modules
 use crate::config::RenderConfig;
 use crate::renderer::SnippetRenderer;
 use crate::syntax;
