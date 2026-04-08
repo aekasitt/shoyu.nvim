@@ -4,10 +4,10 @@ use std::os::raw::{c_char, c_int};
 
 mod config;
 mod font;
+mod layout;
 mod renderer;
 mod safe_ffi;
 mod syntax;
-mod text_layout;
 mod themes;
 
 /// FFI function to generate a code snippet image

@@ -12,7 +12,12 @@ owned_ttf_parser = '0.15'
 rand = '0.8'
 serde = { version = '1.0', features = ['derive'] }
 serde_json = '1.0'
-syntect = '5.1'
+syntect = { default-features = false, features = [
+  'default-syntaxes',
+  'default-themes',
+  'parsing',
+  'regex-fancy',
+], version = '5.2' }
 thiserror = '1.0'
 # cosmic-text for complex script rendering (Thai, Arabic, etc.)
 cosmic-text = { version = '0.12', default-features = false, features = ['std', 'swash'] }
@@ -31,9 +36,13 @@ name = 'shoyu'
 version = '0.1.0'
 
 
+[profile.dev]
+debug = 'line-tables-only'
+
+
 [profile.release]
 opt-level = 'z'
-codegen-units = 1
-lto = true
+codegen-units = 2
+lto = 'thin'
 panic = 'abort'
-strip = true
+strip = 'symbols'

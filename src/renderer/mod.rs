@@ -1,14 +1,17 @@
-use anyhow::{anyhow, Result};
-use base64::engine::general_purpose;
+/* ~~/src/renderer/mod.rs */
+
+// third-party crates
+use anyhow::{Result, anyhow};
 use base64::Engine;
+use base64::engine::general_purpose;
 use image::{ImageBuffer, ImageEncoder, Rgba, RgbaImage};
 
+// local modules
 use crate::config::RenderConfig;
-use crate::font::{has_thai_font_support, load_font_with_fallback, FontManager};
+use crate::font::{FontManager, load_font_with_fallback};
+use crate::layout::{ComplexTextRenderer, has_complex_script};
 use crate::syntax::{HighlightedLine, SyntaxHighlighter};
-use crate::text_layout::{has_complex_script, ComplexTextRenderer};
-use crate::themes::{get_theme, Theme};
-
+use crate::themes::{Theme, get_theme};
 mod color;
 mod drawing;
 mod gradient;
@@ -34,12 +37,9 @@ impl SnippetRenderer {
     let font_size = config.get_scaled_font_size();
     let font_manager = load_font_with_fallback(font_size)?;
 
-    // Initialize complex text renderer if Thai fonts are available
-    let complex_renderer = if has_thai_font_support() {
-      Some(ComplexTextRenderer::new(font_size)?)
-    } else {
-      None
-    };
+    // Always initialize complex text renderer so system font fallback can shape
+    // Thai/Arabic/Indic text even when custom Thai font paths are unavailable.
+    let complex_renderer = Some(ComplexTextRenderer::new(font_size)?);
 
     Ok(Self {
       theme,
@@ -236,13 +236,7 @@ impl SnippetRenderer {
       // Route to appropriate renderer based on content
       if needs_shaping && self.complex_renderer.is_some() {
         // Use cosmic-text for complex scripts
-        let color = if line.tokens.len() == 1 {
-          rgba_from_hex(&line.tokens[0].color.hex)?
-        } else {
-          rgba_from_hex(&self.theme.foreground.hex)?
-        };
-        let _complex_width = self.render_complex_line(image, &line.tokens, x, y, color)?;
-        x += _complex_width;
+        self.render_complex_line(image, &line.tokens, x, y)?;
       } else {
         // Use fontdue for simple ASCII text (fast path)
         for token in &line.tokens {
@@ -261,12 +255,9 @@ impl SnippetRenderer {
     tokens: &[crate::syntax::HighlightedToken],
     x: u32,
     y: u32,
-    _default_color: Rgba<u8>,
   ) -> Result<u32> {
     if let Some(ref mut renderer) = self.complex_renderer {
-      // For now, render all tokens in the default color
-      // TODO: Support per-token coloring in cosmic-text
-      renderer.render_line(image, tokens, x, y, _default_color)
+      renderer.render_line(image, tokens, x, y)
     } else {
       // Fallback to simple rendering if complex renderer unavailable
       let mut current_x = x;

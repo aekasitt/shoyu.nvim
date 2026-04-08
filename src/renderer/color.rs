@@ -1,4 +1,7 @@
-use anyhow::{anyhow, Result};
+/* ~~/src/renderer/color.rs */
+
+// third-party crates
+use anyhow::{Result, anyhow};
 use image::Rgba;
 
 pub(super) fn rgba_from_hex(hex: &str) -> Result<Rgba<u8>> {

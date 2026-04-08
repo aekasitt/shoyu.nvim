@@ -1,9 +1,13 @@
+/* ~~/src/renderer/gradient.rs */
+
+// third-party crates
 use anyhow::Result;
 use image::{Rgba, RgbaImage};
 use rand::Rng;
 
-use super::color::rgba_from_hex;
-use super::SnippetRenderer;
+// local modules
+use crate::renderer::SnippetRenderer;
+use crate::renderer::color::rgba_from_hex;
 
 impl SnippetRenderer {
   pub(super) fn draw_gradient_backdrop(
@@ -29,25 +33,21 @@ impl SnippetRenderer {
           2 => self.radial_gradient(x, y, width, height, color1, color2),
           _ => self.diagonal_gradient(x, y, width, height, color1, color2),
         };
-
         // Apply noise effect if enabled
         let final_color = if self.config.noise_effect {
           self.apply_noise_effect(pixel_color, &mut rng)
         } else {
           pixel_color
         };
-
         image.put_pixel(x, y, final_color);
       }
     }
-
     Ok(())
   }
 
   pub(super) fn generate_random_gradient_color(&self, rng: &mut impl Rng) -> Rgba<u8> {
     // Generate lighter colors that complement the theme
     let base_color = rgba_from_hex(&self.theme.background.hex).unwrap_or(Rgba([30, 30, 30, 255]));
-
     // Lighten the base color by adding a brightness boost
     let brightness_boost = 60.0; // Increase brightness
     let lightened_base = Rgba([
@@ -56,7 +56,6 @@ impl SnippetRenderer {
       ((base_color[2] as f32 + brightness_boost).clamp(0.0, 255.0)) as u8,
       255,
     ]);
-
     // Create variations of the lightened color with some randomization
     let variation_range = 30.0; // Reduced variation for smoother gradients
     let r = ((lightened_base[0] as f32 + rng.gen_range(-variation_range..variation_range))
@@ -65,7 +64,6 @@ impl SnippetRenderer {
       .clamp(0.0, 255.0)) as u8;
     let b = ((lightened_base[2] as f32 + rng.gen_range(-variation_range..variation_range))
       .clamp(0.0, 255.0)) as u8;
-
     Rgba([r, g, b, 255])
   }
 
@@ -137,11 +135,9 @@ impl SnippetRenderer {
   pub(super) fn apply_noise_effect(&self, color: Rgba<u8>, rng: &mut impl Rng) -> Rgba<u8> {
     let noise_strength = 15.0; // Adjust noise intensity
     let noise = rng.gen_range(-noise_strength..noise_strength);
-
     let r = ((color[0] as f32 + noise).clamp(0.0, 255.0)) as u8;
     let g = ((color[1] as f32 + noise).clamp(0.0, 255.0)) as u8;
     let b = ((color[2] as f32 + noise).clamp(0.0, 255.0)) as u8;
-
     Rgba([r, g, b, color[3]])
   }
 }

@@ -1,10 +1,13 @@
 /* ~~/src/syntax.rs */
 
-use crate::themes::{Theme, ThemeColor};
+// third-party crates
 use syntect::easy::HighlightLines;
 use syntect::highlighting::{Style, ThemeSet};
 use syntect::parsing::{SyntaxReference, SyntaxSet};
 use syntect::util::LinesWithEndings;
+
+// local modules
+use crate::themes::{Theme, ThemeColor};
 
 pub struct SyntaxHighlighter {
   syntax_set: SyntaxSet,
@@ -26,7 +29,6 @@ impl SyntaxHighlighter {
   pub fn new() -> Self {
     let syntax_set = SyntaxSet::load_defaults_newlines();
     let theme_set = ThemeSet::load_defaults();
-
     Self {
       syntax_set,
       theme_set,

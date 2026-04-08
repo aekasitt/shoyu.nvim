@@ -1,8 +1,12 @@
+/* ~~/src/renderer/drawing.rs */
+
+// third-party crates
 use anyhow::Result;
 use image::{Rgba, RgbaImage};
 
-use super::color::rgba_from_hex;
-use super::SnippetRenderer;
+// local modules
+use crate::renderer::SnippetRenderer;
+use crate::renderer::color::rgba_from_hex;
 
 impl SnippetRenderer {
   pub(super) fn draw_circle(

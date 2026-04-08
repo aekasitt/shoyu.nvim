@@ -1,7 +1,7 @@
 /* ~~/src/font.rs */
 
 // third-party crates
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use fontdue::{Font, FontSettings};
 use image::{Rgba, RgbaImage};
 
@@ -23,13 +23,11 @@ impl FontManager {
   pub fn new(font_data: &[u8], size: f32) -> Result<Self> {
     let font = Font::from_bytes(font_data, FontSettings::default())
       .map_err(|e| anyhow!("Failed to load font: {}", e))?;
-
     Ok(Self { font, size })
   }
 
   pub fn render_glyph(&self, character: char) -> GlyphInfo {
     let (metrics, bitmap) = self.font.rasterize(character, self.size);
-
     GlyphInfo {
       data: bitmap,
       width: metrics.width,
@@ -49,7 +47,6 @@ impl FontManager {
       // Use font metrics but cap it to prevent excessive spacing
       let metrics_height = metrics.ascent - metrics.descent;
       let font_size_height = self.size * 0.95; // Slightly tighter than font size
-
       // Use the smaller of the two to ensure tight baseline
       metrics_height.min(font_size_height).ceil() as u32
     } else {
@@ -159,7 +156,11 @@ fn create_fallback_font(_size: f32) -> Result<FontManager> {
 pub const THAI_FONT_PATHS: &[&str] = &[
   // macOS system Thai fonts
   "/System/Library/Fonts/Thonburi.ttc",
+  "/System/Library/Fonts/ThonburiUI.ttc",
   "/System/Library/Fonts/SFNSThai.ttf",
+  "/System/Library/Fonts/Supplemental/Thonburi.ttc",
+  "/System/Library/Fonts/Supplemental/Ayuthaya.ttf",
+  "/System/Library/Fonts/Supplemental/SukhumvitSet.ttc",
   "/Library/Fonts/Thonburi.ttf",
   "/Library/Fonts/Ayuthaya.ttf",
   // Linux Thai fonts
