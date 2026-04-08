@@ -87,8 +87,8 @@ cargo build --release
 
 ### Commands
 
-- `:ShoyuGenerate [theme]` - Generate image from current buffer
-- `:ShoyuSelection [theme]` - Generate image from visual selection  
+- `:Shoyu [theme]` - Generate image from current buffer
+- In `view` mode `:Shoyu [theme]` - Generate image from visual selection  
 - `:ShoyuThemes` - List available themes
 
 ### Default Keymaps
@@ -137,27 +137,6 @@ require('shoyu').setup({
 5. **Solarized Dark/Light** - Low-contrast, eye-friendly themes
 6. **One Dark** - Atom's popular dark theme
 7. **Gruvbox** - Retro groove color scheme
-
-### Theme Preview
-
-```lua
--- Try different themes
-:ShoyuGenerate dracula
-:ShoyuGenerate github
-:ShoyuGenerate nord
-```
-
-## Supported Languages
-
-- **Web**: JavaScript, TypeScript, HTML, CSS, JSON
-- **Systems**: Rust, C, C++, Go
-- **Scripting**: Python, Bash, Lua, Ruby, PHP
-- **JVM**: Java, Kotlin, Scala, Clojure
-- **Functional**: Haskell
-- **Mobile**: Swift
-- **Data**: YAML, XML, SQL
-- **Documentation**: Markdown
-- **Config**: Vim script, Dockerfile
 
 ## API Reference
 
@@ -223,12 +202,9 @@ cargo build --release
 ```
 shoyu.nvim/
 │
-├── src/
-│   ├── lib.rs          # Foreign function interface
-│   ├── renderer.rs     # Image generation
-│   ├── themes.rs       # Color themes
-│   ├── syntax.rs       # Syntax highlighting
-│   └── config.rs       # Configuration
+├── fonts/              # Collection of typeface files
+│   ├── fallback.dat    # Fallback data served as basic font
+│   └── *.ttf
 │
 ├── lua/shoyu/
 │   └── init.lua        # Neovim interface
@@ -237,10 +213,18 @@ shoyu.nvim/
 │   ├── build.lua       # Build shared library from source
 │   └── shoyu.lua       # Initiate Shoyu plugin
 │
-├── fonts/              # Collection of typeface files
-│   └── *.ttf
+├── src/                # Rust backend to be compiled to shared library
+│   ├── config.rs       # Configuration
+│   ├── lib.rs          # Foreign function interface (FFI)
+│   ├── renderer.rs     # Image generation
+│   ├── syntax.rs       # Syntax highlighting
+│   └── themes.rs       # Color themes
 │
-└── Cargo.toml          # Rust dependencies
+├── tests/              # Lua testsuites
+│   └── *.lua
+│
+├── Cargo.lock          # Lockfile for Rust dependencies
+└── Cargo.toml          # Rust build and project setup
 ```
 
 ### Adding New Themes
