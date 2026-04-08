@@ -7,7 +7,7 @@ local M = { lib = nil }
 local bit = require('bit')
 local ffi = require('ffi')
 
-ffi.cdef[[
+ffi.cdef([[
   char* generate_snippet_image(
     const char* code,
     const char* language,
@@ -17,13 +17,13 @@ ffi.cdef[[
   void free_string(char* s);
   char* get_available_themes(void);
   int is_language_supported(const char* language);
-]]
+]])
 
 local defaults = {
   width = 1200,
   height = nil,
   padding = 64,
-  line_height = .8,
+  line_height = 0.8,
   font_size = 18,
   font_family = 'Fira Code',
   background_color = '#1e1e1e',
@@ -58,9 +58,9 @@ function M.load_library()
     return M.lib
   end
   local file_names = {
-    'libshoyu.so',     -- Linux
-    'shoyu.dll',       -- Windows
-    'libshoyu.dylib',  -- macOS
+    'libshoyu.so', -- Linux
+    'shoyu.dll', -- Windows
+    'libshoyu.dylib', -- macOS
   }
   local plugin_dir = get_plugin_dir()
   for _, shared_object in ipairs(file_names) do
@@ -71,14 +71,18 @@ function M.load_library()
     end
   end
 
-  error(string.format(
-    'Could not load shoyu shared library from plugin directory: %s\n' ..
-    'Make sure to build the plugin with: cargo build --release\n' ..
-    'Searched paths:\n' ..
-    '  - %s/target/release/\n' ..
-    '  - %s/target/debug/',
-    plugin_dir, plugin_dir, plugin_dir
-  ))
+  error(
+    string.format(
+      'Could not load shoyu shared library from plugin directory: %s\n'
+        .. 'Make sure to build the plugin with: cargo build --release\n'
+        .. 'Searched paths:\n'
+        .. '  - %s/target/release/\n'
+        .. '  - %s/target/debug/',
+      plugin_dir,
+      plugin_dir,
+      plugin_dir
+    )
+  )
 end
 
 -- Generate image output
@@ -305,13 +309,13 @@ function M.setup(_, opts)
     complete = function()
       return M.get_themes()
     end,
-    desc = 'Generate code snippet image (uses range/selection if available, otherwise full buffer)'
+    desc = 'Generate code snippet image (uses range/selection if available, otherwise full buffer)',
   })
   vim.api.nvim_create_user_command('ShoyuThemes', function()
     local themes = M.get_themes()
     vim.notify('Available themes: ' .. table.concat(themes, ', '))
   end, {
-    desc = 'List available themes'
+    desc = 'List available themes',
   })
 end
 
