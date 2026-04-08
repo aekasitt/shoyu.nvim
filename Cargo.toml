@@ -14,6 +14,8 @@ serde = { version = '1.0', features = ['derive'] }
 serde_json = '1.0'
 syntect = '5.1'
 thiserror = '1.0'
+# cosmic-text for complex script rendering (Thai, Arabic, etc.)
+cosmic-text = { version = '0.12', default-features = false, features = ['std', 'swash'] }
 
 
 [lib]
@@ -23,7 +25,7 @@ crate-type = ['cdylib']
 
 [package]
 description = 'Beautiful code snippets in Neovim is easy, let me Shoyu!'
-edition = '2021'
+edition = '2024'
 license = 'MIT'
 name = 'shoyu'
 version = '0.1.0'

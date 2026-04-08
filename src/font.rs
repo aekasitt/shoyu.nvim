@@ -1,5 +1,6 @@
 /* ~~/src/font.rs */
 
+// third-party crates
 use anyhow::{anyhow, Result};
 use fontdue::{Font, FontSettings};
 use image::{Rgba, RgbaImage};
@@ -152,4 +153,49 @@ fn create_fallback_font(_size: f32) -> Result<FontManager> {
     "No suitable font found. Please place a TTF font in assets/fonts/ directory.\n\
          Recommended: JetBrains Mono, Fira Code, or any monospace programming font."
   ))
+}
+
+/// Thai font paths to try for cosmic-text complex script rendering
+pub const THAI_FONT_PATHS: &[&str] = &[
+  // macOS system Thai fonts
+  "/System/Library/Fonts/Thonburi.ttc",
+  "/System/Library/Fonts/SFNSThai.ttf",
+  "/Library/Fonts/Thonburi.ttf",
+  "/Library/Fonts/Ayuthaya.ttf",
+  // Linux Thai fonts
+  "/usr/share/fonts/truetype/noto/NotoSansThai.ttf",
+  "/usr/share/fonts/truetype/noto/NotoSansThai-Regular.ttf",
+  "/usr/share/fonts/truetype/noto/NotoSansThaiUI-Regular.ttf",
+  "/usr/share/fonts/truetype/sarabun/Sarabun-Regular.ttf",
+  "/usr/share/fonts/truetype/thaifonts/ThaiFonts.ttf",
+  // Windows Thai fonts
+  "/Windows/Fonts/thaifont.ttf",
+  "/Windows/Fonts/ThaiUI.ttf",
+  // Project-local fonts
+  "./fonts/NotoSansThai-Regular.ttf",
+  "./fonts/Sarabun-Regular.ttf",
+];
+
+/// Check if a Thai font is available on the system
+pub fn find_thai_font() -> Option<&'static str> {
+  for path in THAI_FONT_PATHS {
+    if std::path::Path::new(path).exists() {
+      return Some(path);
+    }
+  }
+  None
+}
+
+/// Get list of available Thai font paths as strings
+pub fn get_available_thai_fonts() -> Vec<String> {
+  THAI_FONT_PATHS
+    .iter()
+    .filter(|path| std::path::Path::new(path).exists())
+    .map(|&s| s.to_string())
+    .collect()
+}
+
+/// Check if the current system has Thai font support
+pub fn has_thai_font_support() -> bool {
+  find_thai_font().is_some()
 }

@@ -71,7 +71,7 @@ pub fn safe_generate_snippet_image(
       serde_json::from_str(&config_str).map_err(|e| anyhow!("Invalid JSON config: {}", e))?
     };
 
-    let renderer = SnippetRenderer::new(&theme_str, config)?;
+    let mut renderer = SnippetRenderer::new(&theme_str, config)?;
     let image_data = renderer.render_snippet(&code_str, &language_str)?;
 
     Ok(image_data)

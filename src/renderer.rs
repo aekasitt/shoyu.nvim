@@ -1,13 +1,14 @@
 /* ~~/src/renderer.rs */
 
 use anyhow::{anyhow, Result};
-use base64::{engine::general_purpose, Engine as _};
+use base64::engine::general_purpose;
 use image::{ImageBuffer, ImageEncoder, Rgba, RgbaImage};
 use rand::Rng;
 
 use crate::config::RenderConfig;
-use crate::font::{load_font_with_fallback, FontManager};
+use crate::font::{has_thai_font_support, load_font_with_fallback, FontManager};
 use crate::syntax::{HighlightedLine, SyntaxHighlighter};
+use crate::text_layout::{has_complex_script, ComplexTextRenderer};
 use crate::themes::{get_theme, Theme};
 
 pub struct SnippetRenderer {
@@ -15,6 +16,8 @@ pub struct SnippetRenderer {
   config: RenderConfig,
   highlighter: SyntaxHighlighter,
   font_manager: FontManager,
+  /// Complex text renderer for Thai, Arabic, and other scripts requiring shaping
+  complex_renderer: Option<ComplexTextRenderer>,
 }
 
 impl SnippetRenderer {
@@ -27,15 +30,23 @@ impl SnippetRenderer {
     let font_size = config.get_scaled_font_size();
     let font_manager = load_font_with_fallback(font_size)?;
 
+    // Initialize complex text renderer if Thai fonts are available
+    let complex_renderer = if has_thai_font_support() {
+      Some(ComplexTextRenderer::new(font_size)?)
+    } else {
+      None
+    };
+
     Ok(Self {
       theme,
       config,
       highlighter,
       font_manager,
+      complex_renderer,
     })
   }
 
-  pub fn render_snippet(&self, code: &str, language: &str) -> Result<String> {
+  pub fn render_snippet(&mut self, code: &str, language: &str) -> Result<String> {
     let highlighted_lines = self.highlighter.highlight_code(code, language, &self.theme);
     let line_count = highlighted_lines.len() as u32;
 
@@ -113,6 +124,7 @@ impl SnippetRenderer {
     }
 
     // Draw code content (within the panel area)
+    // Note: draw_code_content now uses &mut self for complex renderer
     self.draw_code_content(
       &mut image,
       &highlighted_lines,
@@ -181,7 +193,7 @@ impl SnippetRenderer {
   }
 
   fn draw_code_content(
-    &self,
+    &mut self,
     image: &mut RgbaImage,
     highlighted_lines: &[HighlightedLine],
     _padding: u32,
@@ -205,18 +217,62 @@ impl SnippetRenderer {
       let y = start_y + (line_index as u32 * scaled_line_height);
       let mut x = offset_x + scaled_padding;
 
+      // Check if line contains complex scripts requiring shaping
+      let line_text: String = line.tokens.iter().map(|t| t.text.as_str()).collect();
+      let needs_shaping = has_complex_script(&line_text);
+
+      // Draw line numbers (always use simple rendering)
       if self.config.line_numbers {
         let line_num = format!("{:3} ", line_index + 1);
         let line_num_color = rgba_from_hex(&self.theme.comment.hex)?;
         x += self.draw_text(image, &line_num, x, y, font_size, line_num_color)?;
         x += (10.0 * self.config.export_size) as u32; // Add some spacing
       }
-      for token in &line.tokens {
-        let token_color = rgba_from_hex(&token.color.hex)?;
-        x += self.draw_text(image, &token.text, x, y, font_size, token_color)?;
+
+      // Route to appropriate renderer based on content
+      if needs_shaping && self.complex_renderer.is_some() {
+        // Use cosmic-text for complex scripts
+        let color = if line.tokens.len() == 1 {
+          rgba_from_hex(&line.tokens[0].color.hex)?
+        } else {
+          rgba_from_hex(&self.theme.foreground.hex)?
+        };
+        let _complex_width = self.render_complex_line(image, &line.tokens, x, y, color)?;
+        x += _complex_width;
+      } else {
+        // Use fontdue for simple ASCII text (fast path)
+        for token in &line.tokens {
+          let token_color = rgba_from_hex(&token.color.hex)?;
+          x += self.draw_text(image, &token.text, x, y, font_size, token_color)?;
+        }
       }
     }
     Ok(())
+  }
+
+  /// Render a line with complex script support using cosmic-text
+  fn render_complex_line(
+    &mut self,
+    image: &mut RgbaImage,
+    tokens: &[crate::syntax::HighlightedToken],
+    x: u32,
+    y: u32,
+    _default_color: Rgba<u8>,
+  ) -> Result<u32> {
+    if let Some(ref mut renderer) = self.complex_renderer {
+      // For now, render all tokens in the default color
+      // TODO: Support per-token coloring in cosmic-text
+      renderer.render_line(image, tokens, x, y, _default_color)
+    } else {
+      // Fallback to simple rendering if complex renderer unavailable
+      let mut current_x = x;
+      let font_size = self.config.get_scaled_font_size();
+      for token in tokens {
+        let color = rgba_from_hex(&token.color.hex)?;
+        current_x += self.draw_text(image, &token.text, current_x, y, font_size, color)?;
+      }
+      Ok(current_x - x)
+    }
   }
 
   fn draw_text(
