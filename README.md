@@ -53,6 +53,9 @@ Built with Rust for performance and powered by advanced syntax highlighting.
       window_controls = true,
     })
   end,
+  dependencies = {
+    'nvim-lua/plenary.nvim',
+  },
 }
 ```
 
@@ -210,7 +213,6 @@ shoyu.nvim/
 │   └── init.lua        # Neovim interface
 │
 ├── plugin/
-│   ├── build.lua       # Build shared library from source
 │   └── shoyu.lua       # Initiate Shoyu plugin
 │
 ├── src/                # Rust backend to be compiled to shared library
@@ -224,7 +226,8 @@ shoyu.nvim/
 │   └── *.lua
 │
 ├── Cargo.lock          # Lockfile for Rust dependencies
-└── Cargo.toml          # Rust build and project setup
+├── Cargo.toml          # Rust build and project setup
+└── build.lua           # Build shared library from source, autodetected by Lazy
 ```
 
 ### Adding New Themes
