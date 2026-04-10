@@ -302,7 +302,7 @@ function M.setup(_, opts)
         string.format(
           'Could not load shoyu shared library from plugin directory: %s\n'
             .. 'Make sure to build the plugin with: cargo build --release\n'
-            .. 'If using LazyNvim build the plugin with: :Lazy build shoyu\n',
+            .. 'If using LazyNvim build the plugin with: :Lazy build shoyu.nvim\n',
           plugin_dir
         ),
         vim.log.levels.WARN
