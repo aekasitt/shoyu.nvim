@@ -3,6 +3,10 @@
 **/*.otf
 
 
+### llms ###
+AGENTS.md
+
+
 ### macos ###
 .DS_Store
 
@@ -17,8 +21,10 @@
 target
 
 
-### workspace ###
+### workspaces ###
+.crush
 .cursor
+.editorconfig
 .idea
 .ignore
 .vscode
