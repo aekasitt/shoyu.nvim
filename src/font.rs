@@ -176,27 +176,3 @@ pub const THAI_FONT_PATHS: &[&str] = &[
   "./fonts/NotoSansThai-Regular.ttf",
   "./fonts/Sarabun-Regular.ttf",
 ];
-
-/// Check if a Thai font is available on the system
-pub fn find_thai_font() -> Option<&'static str> {
-  for path in THAI_FONT_PATHS {
-    if std::path::Path::new(path).exists() {
-      return Some(path);
-    }
-  }
-  None
-}
-
-/// Get list of available Thai font paths as strings
-pub fn get_available_thai_fonts() -> Vec<String> {
-  THAI_FONT_PATHS
-    .iter()
-    .filter(|path| std::path::Path::new(path).exists())
-    .map(|&s| s.to_string())
-    .collect()
-}
-
-/// Check if the current system has Thai font support
-pub fn has_thai_font_support() -> bool {
-  find_thai_font().is_some()
-}

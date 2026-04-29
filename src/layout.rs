@@ -86,11 +86,6 @@ impl ComplexTextRenderer {
     })
   }
 
-  /// Get line height for layout calculations
-  pub fn get_line_height(&self) -> u32 {
-    self.metrics.line_height as u32
-  }
-
   /// Render a line of highlighted tokens with complex script support
   /// Returns the total width consumed
   pub fn render_line(
