@@ -119,23 +119,10 @@ impl SyntaxHighlighter {
     lines
   }
 
-  fn convert_syntect_style_to_theme_color(&self, style: Style, theme: &Theme) -> ThemeColor {
-    // Map syntect colors to our theme colors based on style properties
+  fn convert_syntect_style_to_theme_color(&self, style: Style, _theme: &Theme) -> ThemeColor {
     let fg = style.foreground;
-
-    // Create a hex color from the syntect color
     let hex = format!("#{:02x}{:02x}{:02x}", fg.r, fg.g, fg.b);
-
-    // Try to match the color to appropriate theme colors
-    // This is a simplified mapping - you could make it more sophisticated
-    if style
-      .font_style
-      .contains(syntect::highlighting::FontStyle::BOLD)
-    {
-      theme.keyword.clone()
-    } else {
-      ThemeColor::new(&hex)
-    }
+    ThemeColor::new(&hex)
   }
 
   fn highlight_with_patterns(&self, code: &str, theme: &Theme) -> Vec<HighlightedLine> {
